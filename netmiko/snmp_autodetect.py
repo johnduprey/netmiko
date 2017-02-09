@@ -30,6 +30,8 @@ except ImportError:
 
 from netmiko.ssh_dispatcher import CLASS_MAPPER
 
+HOSTNAME_OID = '.1.3.6.1.2.1.1.5.0'
+
 # Higher priority indicates a better match.
 SNMP_MAPPER_BASE = {
     'cisco_ios': {"oid": ".1.3.6.1.2.1.1.1.0",
@@ -217,6 +219,10 @@ class SNMPDetect(object):
             return self._get_snmpv2c(oid)
         else:
             return self._get_snmpv3(oid)
+
+    def get_hostname(self):
+        snmp_response = self._get_snmp(HOSTNAME_OID)
+        return snmp_response
 
     def autodetect(self):
         """
