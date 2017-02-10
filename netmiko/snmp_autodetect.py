@@ -56,12 +56,12 @@ SNMP_MAPPER_BASE = {
     'fortinet': {"oid": ".1.3.6.1.2.1.1.1.0",
                  "expr": re.compile(r"Forti.*", re.IGNORECASE),
                  "priority": 80},
-    'hp_procurve': {"oid": ".1.3.6.1.4.1.11.2.3.7.11.154",
-                 "expr": re.compile(r".*ProCurve.*",re.IGNORECASE),
-                 "priority": 80},
-    'hp_comware': {"oid": ".1.3.6.1.4.1.25506.11.1.85",
+    'hp_comware': {"oid": ".1.3.6.1.2.1.1.1.0",
                    "expr": re.compile(r".*HP.*",re.IGNORECASE),
-                   "priority": 80},
+                   "priority": 60},
+    'hp_procurve': {"oid": ".1.3.6.1.2.1.1.1.0",
+                 "expr": re.compile(r".*ProCurve.*", re.IGNORECASE),
+                 "priority": 99},
 }
 
 # Ensure all SNMP device types are supported by Netmiko
