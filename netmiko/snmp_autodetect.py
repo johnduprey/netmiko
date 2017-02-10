@@ -30,6 +30,7 @@ except ImportError:
 
 from netmiko.ssh_dispatcher import CLASS_MAPPER
 
+# Generic OID for system name
 HOSTNAME_OID = '.1.3.6.1.2.1.1.5.0'
 
 # Higher priority indicates a better match.
@@ -55,6 +56,12 @@ SNMP_MAPPER_BASE = {
     'fortinet': {"oid": ".1.3.6.1.2.1.1.1.0",
                  "expr": re.compile(r"Forti.*", re.IGNORECASE),
                  "priority": 80},
+    'hp_procurve': {"oid": ".1.3.6.1.4.1.11.2.3.7.11.154",
+                 "expr": re.compile(r".*ProCurve.*",re.IGNORECASE),
+                 "priority": 80},
+    'hp_comware': {"oid": ".1.3.6.1.4.1.25506.11.1.85",
+                   "expr": re.compile(r".*HP.*",re.IGNORECASE),
+                   "priority": 80},
 }
 
 # Ensure all SNMP device types are supported by Netmiko
@@ -157,6 +164,7 @@ class SNMPDetect(object):
         self.encrypt_key = encrypt_key
         self.auth_proto = self._snmp_v3_authentication[auth_proto]
         self.encryp_proto = self._snmp_v3_encryption[encrypt_proto]
+        self.version = ""
         self._response_cache = {}
 
     def _get_snmpv3(self, oid):
@@ -221,8 +229,17 @@ class SNMPDetect(object):
             return self._get_snmpv3(oid)
 
     def get_hostname(self):
+        """
+        Get the hostname of the device
+        """
         snmp_response = self._get_snmp(HOSTNAME_OID)
         return snmp_response
+
+    def get_version(self):
+        """
+        Return the full system info OID data after autodetect
+        """
+        return self.version
 
     def autodetect(self):
         """
@@ -258,6 +275,6 @@ class SNMPDetect(object):
 
             # See if we had a match
             if re.search(regex, snmp_response):
+                self.version = snmp_response
                 return device_type
-
         return None
